@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include "DagimCoin.h"
 
 // A simple class to represent the blockchain
@@ -10,7 +11,6 @@ private:
 public:
     // Constructor to create the genesis block (the first block)
     Blockchain() {
-        // Create the first block (genesis block) and add it to the chain
         chain.emplace_back(0, "0", "Genesis Block");
     }
 
@@ -36,18 +36,58 @@ public:
             std::cout << "Hash: " << block.hash << "\n\n";
         }
     }
+
+    // Function to validate the entire blockchain
+    bool isChainValid() {
+        for (size_t i = 1; i < chain.size(); i++) {
+            const Block& currentBlock = chain[i];
+            const Block& previousBlock = chain[i - 1];
+
+            // Check if the current block's previous hash matches the previous block's hash
+            if (currentBlock.previousHash != previousBlock.hash) {
+                return false; // Integrity fail
+            }
+
+            // Check if the current block's hash is correct
+            if (currentBlock.hash != currentBlock.calculateHash()) {
+                return false; // Integrity fail
+            }
+        }
+        return true; // The chain is valid
+    }
 };
 
 int main() {
     Blockchain dagimCoin; // Create the blockchain instance
 
-    // Adding blocks to the blockchain
-    dagimCoin.addBlock("First block after Genesis");
-    dagimCoin.addBlock("Second block with some data");
-    dagimCoin.addBlock("Third block contains important information");
+    std::string command;
+    std::string data;
 
-    // Display the entire blockchain
-    dagimCoin.displayChain();
+    std::cout << "Welcome to the DagimCoin Blockchain Simulator!" << std::endl;
+
+    while (true) {
+        std::cout << "Enter command (add, display, validate, exit): ";
+        std::cin >> command;
+
+        if (command == "add") {
+            std::cout << "Enter block data: ";
+            std::cin.ignore(); // Ignore leftover newline
+            std::getline(std::cin, data);
+            dagimCoin.addBlock(data);
+        } else if (command == "display") {
+            dagimCoin.displayChain();
+        } else if (command == "validate") {
+            if (dagimCoin.isChainValid()) {
+                std::cout << "Blockchain is valid." << std::endl;
+            } else {
+                std::cout << "Blockchain is invalid!" << std::endl;
+            }
+        } else if (command == "exit") {
+            break; // Exit the loop
+        } else {
+            std::cout << "Unknown command." << std::endl;
+        }
+    }
 
     return 0;
 }
