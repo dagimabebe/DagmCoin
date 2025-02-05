@@ -7,7 +7,10 @@ std::string mineBlock(Blockchain& blockchain, std::string data, int difficulty) 
     Block newBlock(blockchain.getChainSize(), blockchain.getLatestBlockHash(), data);
 
     while (true) {
-        // Calculate the hash of the new block
+        // Calculate the hash of the new block using the formula
+        std::stringstream ss;
+        ss << "DagmiumCoin" << newBlock.previousHash << newBlock.timestamp; // Formula inputs
+        std::string input = ss.str();
         std::string blockHash = blockchain.calculateHash(newBlock);
 
         // Check if the hash meets the difficulty requirement
@@ -24,17 +27,17 @@ std::string mineBlock(Blockchain& blockchain, std::string data, int difficulty) 
 }
 
 int main() {
-    Blockchain myCoin;
-    int difficulty = 4; // Number of leading zeros required in the hash
+    Blockchain dagmiumCoin;
+    int difficulty = 6 + dagmiumCoin.getChainSize(); // Difficulty = Length of "Dagmium" (6) + Block Index
 
     std::cout << "Mining block 1...\n";
-    mineBlock(myCoin, "Block 1 Data", difficulty);
+    mineBlock(dagmiumCoin, "Block 1 Data - Dagmium Coin!", difficulty);
 
     std::cout << "Mining block 2...\n";
-    mineBlock(myCoin, "Block 2 Data", difficulty);
+    mineBlock(dagmiumCoin, "Block 2 Data - Dagmium Coin !", difficulty);
 
-    std::cout << "\nBlockchain:\n";
-    myCoin.printChain();
+    std::cout << "\nDagmium Coin Blockchain:\n";
+    dagmiumCoin.printChain();
 
     return 0;
 }
