@@ -1,37 +1,32 @@
-#ifndef DAGIMCOIN_H
-#define DAGIMCOIN_H
+#ifndef BLOCKCHAIN_H
+#define BLOCKCHAIN_H
 
-#include <iostream>
-#include <string>
 #include <vector>
+#include <string>
 #include <ctime>
-#include <openssl/sha.h>
 
-// A struct to represent a single block in the blockchain
+// Define a Block structure
 struct Block {
-    int index; // Position of the block in the blockchain
-    std::string previousHash; // The hash of the previous block
-    std::time_t timestamp; // Time the block was created
-    std::string data; // Data stored in the block
-    std::string hash; // The hash of this block
+    int index; // Block index in the chain
+    std::string previousHash; // Hash of the previous block
+    std::string data; // Data stored in the block (e.g., transactions)
+    std::string hash; // Hash of the current block
+    time_t timestamp; // Timestamp of when the block was created
 
-    // Constructor
-    Block(int idx, std::string prevHash, std::string blockData) 
-        : index(idx), previousHash(prevHash), timestamp(std::time(nullptr)), data(blockData) {
-        hash = calculateHash();
-    }
-
-    // Function to calculate the hash of the block
-    std::string calculateHash() {
-        std::string input = std::to_string(index) + previousHash + std::to_string(timestamp) + data;
-        unsigned char hash[SHA256_DIGEST_LENGTH];
-        SHA256((unsigned char*)input.c_str(), input.size(), hash);
-        std::string hashStr;
-        for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-            hashStr += sprintf("%02x", hash[i]);
-        }
-        return hashStr;
-    }
+    Block(int idx, std::string prevHash, std::string d);
 };
 
-#endif // DAGIMCOIN_H
+// Define the Blockchain class
+class Blockchain {
+private:
+    std::vector<Block> chain; // The chain of blocks
+    std::string getLatestBlockHash() const; // Helper function to get the latest block's hash
+    std::string calculateHash(const Block& block) const; // Helper function to calculate a block's hash
+
+public:
+    Blockchain(); // Constructor
+    void addBlock(std::string data); // Function to add a new block
+    void printChain() const; // Function to print the blockchain
+};
+
+#endif // BLOCKCHAIN_H
