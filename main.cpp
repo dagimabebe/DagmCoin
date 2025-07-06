@@ -1,5 +1,5 @@
 #include <iostream>
-#include "blockchain.h" // We'll create this later
+#include "blockchain.h" // 
 
 int main() {
     std::cout << "Welcome to MyCoin - A Simple Cryptocurrency!\n";
